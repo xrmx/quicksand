@@ -93,9 +93,7 @@ Github site: http://github.com/razorjack/quicksand
             var $correctionParent = $sourceParent.offsetParent();
             var correctionOffset = $correctionParent.offset();
             if ($correctionParent.css('position') == 'relative') {
-                if ($correctionParent.get(0).nodeName.toLowerCase() == 'body') {
-
-                } else {
+                if ($correctionParent.get(0).nodeName.toLowerCase() != 'body') {
                     correctionOffset.top += (parseFloat($correctionParent.css('border-top-width')) || 0);
                     correctionOffset.left +=( parseFloat($correctionParent.css('border-left-width')) || 0);
                 }
@@ -167,10 +165,6 @@ Github site: http://github.com/razorjack/quicksand
             rawDest.style.position = 'absolute';
             rawDest.style.top = offset.top - correctionOffset.top + 'px';
             rawDest.style.left = offset.left - correctionOffset.left + 'px';
-            
-            
-    
-            
 
             if (options.adjustHeight === 'dynamic') {
                 // If destination container has different height than source container
@@ -206,38 +200,21 @@ Github site: http://github.com/razorjack/quicksand
                 if (destElement.length) {
                     // The item is both in source and destination collections
                     // It it's under different position, let's move it
-                    if (!options.useScaling) {
-                        animationQueue.push(
-                                            {
+                    animationQueue.push(
+                                        {
                                                 element: $(this), 
                                                 animation: 
                                                     {top: destElement.offset().top - correctionOffset.top, 
                                                      left: destElement.offset().left - correctionOffset.left, 
-                                                     opacity: 1.0
+                                                     opacity: 1.0,
+                                                     scale: options.useScaling ? '1.0' : undefined
                                                     }
-                                            });
-
-                    } else {
-                        animationQueue.push({
-                                            element: $(this), 
-                                            animation: {top: destElement.offset().top - correctionOffset.top, 
-                                                        left: destElement.offset().left - correctionOffset.left, 
-                                                        opacity: 1.0, 
-                                                        scale: '1.0'
-                                                       }
-                                            });
-
-                    }
+                                        });
                 } else {
                     // The item from source collection is not present in destination collections
                     // Let's remove it
-                    if (!options.useScaling) {
-                        animationQueue.push({element: $(this), 
-                                             animation: {opacity: '0.0'}});
-                    } else {
-                        animationQueue.push({element: $(this), animation: {opacity: '0.0', 
-                                         scale: '0.0'}});
-                    }
+                    animationQueue.push({element: $(this), 
+                                        animation: {opacity: '0.0', scale: options.useScaling ? '0.0' : undefined}});
                 }
             });
             
@@ -269,16 +246,10 @@ Github site: http://github.com/razorjack/quicksand
                 var animationOptions;
                 if (sourceElement.length === 0) {
                     // No such element in source collection...
-                    if (!options.useScaling) {
-                        animationOptions = {
-                            opacity: '1.0'
-                        };
-                    } else {
-                        animationOptions = {
-                            opacity: '1.0',
-                            scale: '1.0'
-                        };
-                    }
+                    animationOptions = {
+                        opacity: '1.0',
+                        scale: options.useScaling ? '1.0' : undefined
+                    };
                     // Let's create it
                     d = destElement.clone();
                     var rawDestElement = d.get(0);
